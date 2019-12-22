@@ -9,7 +9,7 @@ private const val TAG = "AppDatabase"
 private const val DATABASE_NAME = "TimeTasker.db"
 private const val DATABASE_VERSION = 3
 
-internal class AppDatabase constructor(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+internal class AppDatabase private constructor(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     init {
         Log.d(TAG, "AppDatabase: initialising")
@@ -31,5 +31,6 @@ internal class AppDatabase constructor(context: Context): SQLiteOpenHelper(conte
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    companion object: SingletonHolder<AppDatabase, Context>(::AppDatabase)
 
 }
