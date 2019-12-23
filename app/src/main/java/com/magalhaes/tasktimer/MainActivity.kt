@@ -1,12 +1,14 @@
 package com.magalhaes.tasktimer
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+
+private const val TAG = "MainActivityLog"
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,9 +17,31 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        val appDatabase = AppDatabase.getInstance(this)
+        val db = appDatabase.readableDatabase
+
+        val cursor = db.rawQuery("SELECT * FROM Tasks", null)
+        Log.d(TAG, "**************************************")
+        cursor.use {
+            while (it.moveToNext()) {
+                // cycle through all records
+                with(cursor) {
+                    val id = getLong(0)
+                    val name = getString(1)
+                    val description = getString(2)
+                    val sortOrder = getString(3)
+                    val result =
+                        "ID: $id. Name: $name description: $description sort order: $sortOrder"
+                    Log.d(TAG, "onCreate: reading data $result")
+                }
+            }
+        }
+
+        Log.d(TAG, "**************************************")
+
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+                .setAction("Action", null).show()
         }
     }
 
@@ -31,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }

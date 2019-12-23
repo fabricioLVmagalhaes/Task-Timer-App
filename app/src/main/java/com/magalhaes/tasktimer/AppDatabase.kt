@@ -4,6 +4,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import java.lang.IllegalStateException
 
 private const val TAG = "AppDatabase"
 private const val DATABASE_NAME = "TimeTasker.db"
@@ -23,12 +24,18 @@ internal class AppDatabase private constructor(context: Context): SQLiteOpenHelp
             ${TasksContract.Columns.TASK_NAME} TEXT NOT NULL,
             ${TasksContract.Columns.TASK_DESCRIPTION} TEXT,
             ${TasksContract.Columns.TASK_SORT_ORDER} INTEGER);""".replaceIndent(" ")
-        Log.d(TAG, "sSQL")
+        Log.d(TAG, sSQL)
         db.execSQL(sSQL)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Log.d(TAG, "onUpgarde: starts")
+        when(oldVersion) {
+            1-> {
+                //upgratde logc from version 1
+            }
+            else -> throw IllegalStateException("onUpgrade() with unknown newVersion: $newVersion")
+        }
     }
 
     companion object: SingletonHolder<AppDatabase, Context>(::AppDatabase)
